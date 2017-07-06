@@ -15,24 +15,10 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	$fixit=0;
 	if(isset($_POST['baro'])) $baro=1;
 	if(isset($_POST['fixit'])) $fixit=1;
-}elseif ($file) {
-	$sname=substr(strrchr(__FILE__,"/"),1);
-    if(defined(__DIR__)){
-		$diroot= __DIR__;
-    }else{
-		$diroot= dirname(__FILE__);
-    }
-	$diroot=$diroot.'/';	
-	$baro=1;
-	$url=$diroot.$file;
-	$file_act_name=$url;
 }else{
 	echo "No params";
 	exit();
 }
-
-
-
 
 $act=simplexml_load_file($url);
 $XmlAct = new act2tcx($act);
