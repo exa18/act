@@ -259,14 +259,9 @@ $dom = dom_import_simplexml($PrintTcx)->ownerDocument;
 $dom->formatOutput = true;
 $file_act_name = preg_replace ("/.act/", ".tcx", $file_act_name );
 
-if ($file) {
-	echo "Saving..." . $file_act_name . "<br>";
-	$dom->save($file_act_name);
-}else{
 	header('Content-Description: File Transfer');
 	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename='.$file_act_name );
 	echo $dom->saveXML();
-}
 
 ?>
