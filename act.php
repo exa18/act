@@ -273,14 +273,14 @@ class act2tcx {
 		       if ( $this->track > 0 )
 		       	{
 				$this->Distance[$this->track] = $this->Distance[$this->track-1] + 
-								$this->setDistance ( 
-									$this->LatitudeDegrees[$this->track],
-									$this->LongitudeDegrees[$this->track],
-									$this->LatitudeDegrees[$this->track-1],
-									$this->LongitudeDegrees[$this->track-1],
-									str_replace (",",".",$act->TrackPoints[$this->track]->Speed),
-									str_replace (",",".",$act->TrackPoints[$this->track]->IntervalTime)
-								) ;
+							$this->setDistance ( 
+								$this->LatitudeDegrees[$this->track],
+								$this->LongitudeDegrees[$this->track],
+								$this->LatitudeDegrees[$this->track-1],
+								$this->LongitudeDegrees[$this->track-1],
+								str_replace (",",".",$act->TrackPoints[$this->track]->Speed),
+								$i
+							);
 
 			}
 		
