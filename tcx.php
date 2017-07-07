@@ -5,7 +5,7 @@ class tcx {
 
 	private $tcx;
 
-	function __construct ( $act) {
+	function __construct ( $act, $baro=0) {
 
 		$this->tcx = new SimpleXMLElement("<TrainingCenterDatabase></TrainingCenterDatabase>");
 		/* Namespace */
@@ -48,7 +48,7 @@ class tcx {
 
 		$Creator = $Activity->addChild ('Creator');
 		$Creator->addAttribute('xmlns:xsi:type', 'Device_t');
-		$Name = $Creator->addChild ('Name', $act->getDeviceName());
+		$Name = $Creator->addChild ('Name', $act->getDeviceName() . ($baro?' with barometer':'') );
 
 	}
 
