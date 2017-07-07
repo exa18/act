@@ -251,13 +251,12 @@ class act2tcx {
 		for ( $this->track = 0; $this->track < $total; $this->track++) {
 			
 			/* TIME */
-		       $this->setTimeTrack( $this->CurrentTime->format('Y-m-d\TH:i:s\Z'), $this->track );
-		       
+			$this->TimeTrack[$this->track] = $this->CurrentTime->format('Y-m-d\TH:i:s\Z');
 		       $i=str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
 		       $d=$this->IntervalTimeDiff[$this->track];
 		       
 		       $this->IntervalTime[$this->track] =  round ( $d + $i );
-			$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
+			//$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
 			
 		      $this->CurrentTime->add(new DateInterval('PT' . $this->IntervalTime[$this->track] . 'S'));
 
