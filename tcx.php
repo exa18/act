@@ -31,7 +31,8 @@ class tcx {
 		$Cadence = $Lap->addChild ('Cadence', $act->getAvgCadence() );
 		$Track = $Lap->addChild ('Track');
 
-		for ( $i = 0; $i < $act->getTracks(); $i++ ) {
+		$total=$act->getTracks();
+		for ( $i = 0; $i < $total; $i++ ) {
 
 			$Trackpoint = $Track->addChild('Trackpoint');
 			$Time = $Trackpoint->addChild('Time', $act->getTimeTrack( $i ) );
