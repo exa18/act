@@ -246,25 +246,20 @@ class act2tcx {
 		$this->CurrentTime = new DateTime ($this->getStarttime()) ;
 
 		$this->Distance[0] = 0;
+		$total=$this->getTracks();
 		
-		for ( $this->track = 0; $this->track < $this->getTracks (); $this->track++) {
+		for ( $this->track = 0; $this->track < $total; $this->track++) {
 			
 			/* TIME */
 		       $this->setTimeTrack( $this->CurrentTime->format('Y-m-d\TH:i:s\Z'), $this->track );
 		       
-		       $this->setIntervalTime( 
-				$this->getIntervalTimeDiff($this->track),
-			       	$this->track, 
-				str_replace(",","." , $act->TrackPoints[$this->track]->IntervalTime)
-			);
-
-		       $this->setIntervalTimeDiff( 
-			       	$this->getIntervalTimeDiff($this->track),
-				$this->track,
-				str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime)				
-			);
-
-		       $this->CurrentTime->add(new DateInterval('PT' . $this->getIntervalTime($this->track) . 'S'));
+		       $i=str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
+		       $d=$this->IntervalTimeDiff[$this->track];
+		       
+		       $this->IntervalTime[$this->track] =  round ( $d + $i );
+			$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
+			
+		      $this->CurrentTime->add(new DateInterval('PT' . $this->IntervalTime[$this->track] . 'S'));
 
 		       /* Latitude */
 		       $this->LatitudeDegrees[$this->track] = ( str_replace(",", "." , $act->TrackPoints[$this->track]->Latitude ) );
