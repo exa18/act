@@ -9,7 +9,7 @@ Application
 About
 ===
   I wrote this php script for convert ACT file to TCX/GPX format and upload it on Strava or for use it in other application.
-  I also added info for Strava that device have barometr, and cadence fixer ( https://github.com/exa18/cadence-anomaly ).
+  I also added info for Strava that device have barometr, and cadence fixer ( [GitHub](https://github.com/exa18/cadence-anomaly) ).
 
 Tested
 ===
@@ -22,7 +22,7 @@ Tested
   Software
 
     * GS-Sport Training Gym Pro version 1.6.10.0 ( SportXtreme version )
-    * GS-Sport Training Gym Pro version 1.9.4 ( http://usglobalsat.com update )
+    * GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com) update )
 
 Help
 ===
