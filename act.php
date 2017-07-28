@@ -33,7 +33,6 @@ class act {
 	private $Power;
 	private $AvgPower;
 	private $MaxPower;
-	private $Power;
 	private $Speed;
 	private $AvgSpeed;
 	private $MaxCadence;
