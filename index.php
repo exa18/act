@@ -9,8 +9,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
     if(isset($_FILES['user_file']))
     {
         $files = $_FILES['user_file'];
-
-	$url = $_FILES["user_file"]["tmp_name"]; 
+		$url = $_FILES["user_file"]["tmp_name"]; 
     	$file_act_name = $_FILES["user_file"]["name"];
 	}
 	$baro=0;
@@ -260,7 +259,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 			}
 			$xml->Activities->Activity->Lap->Extensions->LX->MaxBikeCadence = max($cad);
 		}else{
-			foreach ($xml->trk->trkseg->trkpt as $v) {
+ 			foreach ($xml->trk->trkseg->trkpt as $v) {
 				$v->extensions->children('gpxtpx',true)->TrackPointExtension->cad = (string)$cad[$k];
 				$k++;
 			}
@@ -279,7 +278,6 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	exit();
 }
 ?>
-
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
@@ -406,4 +404,3 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	</div>
 </body>
 </html>
-
