@@ -6,14 +6,17 @@ class tcx {
 	private $tcx;
 
 	function __construct ( $act, $baro=0) {
-
+		
+		$ae='http://www.garmin.com/xmlschemas/ActivityExtension/v2';
 		$this->tcx = new SimpleXMLElement("<TrainingCenterDatabase></TrainingCenterDatabase>");
+		$root = $this->tcx;
 		/* Namespace */
-		$this->tcx->addAttribute('xmlns', 'http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2');
-		$this->tcx->addAttribute('xmlns:xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-		$this->tcx->addAttribute('xmlns:xsi:schemaLocation', 'http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd');
+		$root->addAttribute('xmlns', 'http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2');
+		$root->addAttribute('xmlns:xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+		$root->addAttribute('xmlns:xsi:schemaLocation', ' http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd');
+		$root->addAttribute('xmlns:xmlns:ns3', $ae);
 
-		$Activities = $this->tcx->addChild( 'Activities' );
+		$Activities = $root->addChild( 'Activities' );
 		$Activity = $Activities->addChild( 'Activity' );
 		$Activity->addAttribute( 'Sport',  $act->getActivitySport() );  
 		$Id = $Activity->addChild( 'Id', $act->getId() );
@@ -45,8 +48,21 @@ class tcx {
 			$HeartRateBpm->addAttribute('xmlns:xsi:type','HeartRateInBeatsPerMinute_t');
 			$Value = $HeartRateBpm->addChild('Value', $act->getHeartRate($i) );
 			$Cadence = $Trackpoint->addChild('Cadence', $act->getCadenceTrack($i) );
+			//$Trackpoint->addChild('Temperature', $act->getTemp($i) );
+
+			$Extension = $Trackpoint->addChild('Extensions');
+			$TPX = $Extension->addChild('TPX');
+			$TPX->addAttribute ('xmlns', $ae );
+			$TPX->addChild('Speed', $act->getSpeed($i) );
+			$TPX->addChild('Watts', $act->getPower($i) );
 		}
 
+		$Extensions = $Lap->addChild('Extensions');
+		$LX = $Extensions->addChild('LX');
+		$LX->addAttribute ('xmlns', $ae );
+		$LX->addChild('AvgSpeed', $act->getAvgSpeed() );
+		$LX->addChild('MaxBikeCadence', $act->getMaxCadence() );
+		
 		$Creator = $Activity->addChild ('Creator');
 		$Creator->addAttribute('xmlns:xsi:type', 'Device_t');
 		$Name = $Creator->addChild ('Name', $act->getDeviceName() . ($baro?' with barometer':'') );
