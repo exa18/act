@@ -6,7 +6,7 @@ act
 About
 ===
   I wrote this php script for convert ACT file to TCX/GPX format and upload it on Strava or for use it in other application.
-  I also added info for Strava that device have barometr, and cadence fixer which you can find here https://github.com/exa18/cadence-anomaly.
+  I also added info for Strava that device have barometr, and cadence fixer ( https://github.com/exa18/cadence-anomaly ).
 
 Tested
 ===
@@ -30,8 +30,8 @@ For any help contact me, important I need know name of your device ( with firmwa
 License
 ===
 
-Copyright 2014 Salvatore Santagati <salvatore.santagati@gmail.com>
-Copyright 2017 Julian Cenkier <julian.cenkier@wp.eu>
+* Copyright 2014 Salvatore Santagati <salvatore.santagati@gmail.com>
+* Copyright 2017 Julian Cenkier <julian.cenkier@wp.eu>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
