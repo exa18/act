@@ -15,6 +15,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	}
 	$baro=0;
 	$fixit=0;
+	$power=0;
 	$type=1;
 	if(isset($_POST['baro'])) $baro=(int)$_POST['baro'];
 	if(isset($_POST['fixit'])) $fixit=(int)$_POST['fixit'];
