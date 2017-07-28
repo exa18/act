@@ -14,7 +14,7 @@ About
 Tested
 ===
 
-  Device 
+  > Device 
 
     * DCY-580P ( SportXtreme MyCiclo 580P version )
     * GB-580P ( firmware F-GGB-2O-1503311.GHX )
