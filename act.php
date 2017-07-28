@@ -3,7 +3,7 @@
 /* Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
  */
 
-class act2tcx {
+class act {
 
 	private $Sport_t;
 	private $Id;
@@ -26,12 +26,19 @@ class act2tcx {
 	private $IntervalTime;
 	private $IntervalTimeDiff;
 	private $utc_offset;
-
-
+	private $Temperature;
+	private $AvgTemp;
+	private $MinTemp;
+	private $MaxTemp;
+	private $Power;
+	private $AvgPower;
+	private $MaxPower;
+	private $Power;
+	private $Speed;
+	private $AvgSpeed;
+	private $MaxCadence;
 
 	function __construct ( $act ) {
-			
-
 		$this->setActivitySport ( $act );
 		$this->setUTC ( $act );
 		$this->setId ( $act );
@@ -42,10 +49,15 @@ class act2tcx {
 		$this->setAverageHeartRateBpm ($act);
 		$this->setMaxHearRate ($act);
 		$this->setAvgCadence ($act);
+		$this->setMaxCadence ($act);
+		$this->setMinTemp ($act);
+		$this->setMaxTemp ($act);
+		$this->setAvgTemp ($act);
+		$this->setAvgPower ($act);
+		$this->setMaxPower ($act);
 		$this->setTracks ($act);
 		$this->setTrackPoints ( $act );
 		$this->setDeviceName ( $act );
-	
 	}
 
 	function setDistance ( $lat1, $lon1, $lat2, $lon2, $speed, $interval ) {
@@ -74,15 +86,12 @@ class act2tcx {
 			if ( $DistInterval == 0 )
 				$this->distance = $DistHaversine * 1000;
 			else 	$this->distance = ( ( $DistHaversine + $DistInterval ) / 2 ) * 1000;
-
 				
 		}
 		
-
 		
 		return $this->distance;  
-	
-	
+		
 	}
 
 	function hoursToSeconds ($hour) { 
@@ -98,7 +107,6 @@ class act2tcx {
 
 	function setActivitySport ( $act ) 	{
 
-		
 		switch ($act->trackmaster->Sport1) {
 
 		case	0:
@@ -138,7 +146,6 @@ class act2tcx {
 		}
 		else $this->Id->sub(new DateInterval('PT' . $this->getUTC() . 'S'));
 
-
 	}
 
 	function setStarttime ( $act )	{
@@ -155,7 +162,6 @@ class act2tcx {
 		}
 		else $this->dateTime->sub(new DateInterval('PT' . $this->getUTC() . 'S'));
 
-
 	}
 
 
@@ -169,7 +175,6 @@ class act2tcx {
 	function setDistanceMeters ( $act )	{
 
 		$this->Distancemeters = $act->trackmaster->TotalDist;
-	
 	
 	}
 
@@ -193,6 +198,27 @@ class act2tcx {
 	function setAvgCadence ( $act ) {
 
 		$this->Cadence	=  $act->trackmaster->AvgCadence;
+	}
+
+	function setMaxCadence ( $act ) {
+
+		$this->MaxCadence	=  $act->trackmaster->MaxCadence;
+	}
+	
+	function setMaxTemp ( $act ) {
+		$this->MaxTemp	=  str_replace(",", ".",$act->trackmaster->MaxTemp);
+	}
+	function setMinTemp ( $act ) {
+		$this->MinTemp	=  str_replace(",", ".",$act->trackmaster->MinTemp);
+	}
+	function setAvgTemp ( $act ) {
+		$this->AvgTemp	=  str_replace(",", ".",$act->trackmaster->AvgTemp);
+	}
+	function setAvgPower ( $act ) {
+		$this->AvgPower	=  $act->trackmaster->AvgPower;
+	}
+	function setMaxPower ( $act ) {
+		$this->MaxPower	=  $act->trackmaster->MaxPower;
 	}
 
 	function setTracks ( $act ){
@@ -247,18 +273,39 @@ class act2tcx {
 
 		$this->Distance[0] = 0;
 		$total=$this->getTracks();
+		$s=0;
 		
 		for ( $this->track = 0; $this->track < $total; $this->track++) {
 			
 			/* TIME */
-			$this->TimeTrack[$this->track] = $this->CurrentTime->format('Y-m-d\TH:i:s\Z');
+		       $this->TimeTrack[$this->track] = $this->CurrentTime->format('Y-m-d\TH:i:s\Z');
 		       $i=str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
 		       $d=$this->IntervalTimeDiff[$this->track];
+			   $speed=$act->TrackPoints[$this->track]->Speed;
+			   $s=$s+(float)$speed;
+			   $speed=str_replace (",",".",$speed);
 		       
 		       $this->IntervalTime[$this->track] =  round ( $d + $i );
-			//$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
+		       /*
+		       $this->setIntervalTime( 
+				$d,
+			       	$this->track, 
+				//str_replace(",","." , $act->TrackPoints[$this->track]->IntervalTime)
+				$i
+			);
+			*/
 			
-		      $this->CurrentTime->add(new DateInterval('PT' . $this->IntervalTime[$this->track] . 'S'));
+				//$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
+				/*
+		       $this->setIntervalTimeDiff( 
+			       	$d,
+				$this->track,
+				//str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime)
+				$i
+			);
+			*/
+		       //$this->CurrentTime->add(new DateInterval('PT' . $this->getIntervalTime($this->track) . 'S'));
+		       $this->CurrentTime->add(new DateInterval('PT' . $this->IntervalTime[$this->track] . 'S'));
 
 		       /* Latitude */
 		       $this->LatitudeDegrees[$this->track] = ( str_replace(",", "." , $act->TrackPoints[$this->track]->Latitude ) );
@@ -270,28 +317,48 @@ class act2tcx {
 		       $this->AltitudeMeters[$this->track] = $act->TrackPoints[$this->track]->Altitude;
 		     
 		       /* Distance */
-		       if ( $this->track > 0 )
-		       	{
-				$this->Distance[$this->track] = $this->Distance[$this->track-1] + 
-							$this->setDistance ( 
-								$this->LatitudeDegrees[$this->track],
-								$this->LongitudeDegrees[$this->track],
-								$this->LatitudeDegrees[$this->track-1],
-								$this->LongitudeDegrees[$this->track-1],
-								str_replace (",",".",$act->TrackPoints[$this->track]->Speed),
-								$i
-							);
-
-			}
+		       if ( $this->track > 0 ) {
+					$this->Distance[$this->track] = $this->Distance[$this->track-1] + 
+					$this->setDistance ( 
+						$this->LatitudeDegrees[$this->track],
+						$this->LongitudeDegrees[$this->track],
+						$this->LatitudeDegrees[$this->track-1],
+						$this->LongitudeDegrees[$this->track-1],
+						$speed,
+						$i
+					) ;
+				}
 		
 		       /* HeartRate */
 		       $this->HeartRateBpm[$this->track] = $act->TrackPoints[$this->track]->HeartRate;
 
 		       /* Cadence */
 		       $this->CadenceTrack[$this->track] = $act->TrackPoints[$this->track]->Cadence;
-			
+			   
+			   /* Temperature */
+		       $this->Temperature[$this->track] = str_replace (",",".",$act->TrackPoints[$this->track]->Temperature);
+			   
+			   /* Power */
+		       $this->Power[$this->track] = $act->TrackPoints[$this->track]->Power;
+			   /*
+					WIGHT = biker weight
+					CRR = is the dimensionless rolling resistance coefficient or coefficient of rolling friction (CRF)
+					DF = DragFactor : frontal area in Meters squared * drag coefficient
+					A = acceleration
+					TW = total weight
+					N =  9.81 m/s2
+					P1 = speed * WIGHT * ( CRR * N )
+					P2 = speed * DF
+					P3 = A * TW
+					P = P1 + P2 + P3
+			   
+			   */
+			   
+			   /* Speed */
+		       $this->Speed[$this->track] = $speed;
 
 		}
+		       $this->AvgSpeed = $s/$total;
 	}
 
 	function setLatitude( $act, $track , $value) {
@@ -346,10 +413,41 @@ class act2tcx {
 
 
 	function getHeartRate ($track){
-
+	
 		return $this->HeartRateBpm[$track];
 	}
-
+	
+	function getSpeed ($track){
+		return $this->Speed[$track];
+	}
+	
+	function getPower ($track){
+		return $this->Power[$track];
+	}
+	function getAvgPower (){
+		return $this->AvgPower;
+	}
+	function getMaxPower (){
+		return $this->MaxPower;
+	}
+	function getTemp ($track){
+		return $this->Temperature[$track];
+	}
+	
+	function getMaxTemp () {
+		return $this->MaxTemp;
+	}
+	function getMinTemp () {
+		return $this->MinTempp;
+	}
+	function getAvgTemp () {
+		return $this->AvgTemp;
+	}
+	
+	function getAvgSpeed(){
+		return $this->AvgSpeed;
+	}
+	
 	function getAltitude($track){
 
 		return $this->AltitudeMeters[$track];
@@ -386,6 +484,12 @@ class act2tcx {
 	function getAvgCadence () {
 		
 		return $this->Cadence;
+
+	}
+	
+	function getMaxCadence () {
+		
+		return $this->MaxCadence;
 
 	}
 
@@ -440,7 +544,6 @@ class act2tcx {
 
 		return $this->utc_offset; 
 	}
-
 
 }
 
