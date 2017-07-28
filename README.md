@@ -22,7 +22,7 @@ Tested
   Software
 
     * GS-Sport Training Gym Pro version 1.6.10.0 ( SportXtreme version )
-    * GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com) update )
+    * GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com/forum/index.php) update )
 
 Help
 ===
