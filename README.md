@@ -16,14 +16,14 @@ Tested
 
   Device 
   >
-  > DCY-580P ( SportXtreme MyCiclo 580P version )
-  > GB-580P ( firmware F-GGB-2O-1503311.GHX )
+  > * DCY-580P ( SportXtreme MyCiclo 580P version ) *
+  > * GB-580P ( firmware F-GGB-2O-1503311.GHX ) *
   >
   
   Software
   >
-  > GS-Sport Training Gym Pro version 1.6.10.0 ( SportXtreme version )
-  > GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com/forum/index.php) update )
+  > * GS-Sport Training Gym Pro version 1.6.10.0 ( SportXtreme version )
+  > * GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com/forum/index.php) update ) *
   >
 
 Help
