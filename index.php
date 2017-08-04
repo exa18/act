@@ -3,6 +3,7 @@ $version = "2.0";
 
 include "act.php";
 include "tcx.php";
+include "gpx.php";
 
 if(isset($_POST['action']) and $_POST['action'] == 'upload')
 {
@@ -21,37 +22,17 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	if(isset($_POST['power'])) $power=(int)$_POST['power'];
 	if(isset($_POST['fileformat'])) $type=(int)$_POST['fileformat'];
 
-
 	$act=simplexml_load_file($url);
 	$XmlAct = new act ( $act );
-	if ($type) {
-		$XmlTcx = new tcx ( $XmlAct, $baro );
-		$xml = $XmlTcx->GetTcx();
-	}else{
-		$XmlGpx = new gpx ( $XmlAct, $baro );
-		$xml = $XmlGpx->GetGpx();
-	}
 
 	if ($fixit) {
 		
-		if ($type) {
-			/*
-				TCX
-			*/
-			foreach ($xml->Activities->Activity->Lap as $v) {
-				foreach ($v->Track->Trackpoint as $c) {
-					$cad[] = (int)$c->Cadence;
-				}
-			}
-		}else{
-			/*
-				GPX
-			*/
-			foreach ($xml->trk->trkseg->trkpt as $v) {
-				$cad[] = (int)$v->extensions->children('gpxtpx',true)->TrackPointExtension->cad;
-			}	
+		$total=$XmlAct->getTracks();
+		for ( $i = 0; $i < $total; $i++ ) {
+			$cad[$i]=(int)$XmlAct->getCadenceTrack($i);
 		}
-	
+		
+	if (max($cad)>0) {
 		$i=0;
 		foreach ($cad as $k=>$v) {
 			$freq[$v]+=1;
@@ -249,26 +230,23 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 		
 		$cad_fixed=(count($cor_a)*3)+count($cor_b)+count($cor_c)+count($cor_d)+count($cor_e)+count($cor_f);
 		
-			$k=0;
-		if ($type) {
-			foreach ($xml->Activities->Activity->Lap as $v) {
-				foreach ($v->Track->Trackpoint as $c) {
-					$c->Cadence=(string)$cad[$k];
-					$k++;
-				}
-			}
-			$xml->Activities->Activity->Lap->Extensions->LX->MaxBikeCadence = max($cad);
-		}else{
- 			foreach ($xml->trk->trkseg->trkpt as $v) {
-				$v->extensions->children('gpxtpx',true)->TrackPointExtension->cad = (string)$cad[$k];
-				$k++;
-			}
+		for ( $i = 0; $i < $total; $i++ ) {
+			$XmlAct->setCadenceTrack($i, $cad[$i]);
 		}
 	}
-
+	}
+	
+	if ($type) {
+		$XmlTcx = new tcx ( $XmlAct, $baro );
+		$xml = $XmlTcx->GetTcx();
+	}else{
+		$XmlGpx = new gpx ( $XmlAct, $baro );
+		$xml = $XmlGpx->GetGpx();
+	}
+	
 	$dom = dom_import_simplexml($xml)->ownerDocument;
 	$dom->formatOutput = true;
-	$file_act_name = preg_replace ("/.act/", ($type?".tcx":".gpx"), $file_act_name );
+	$file_act_name = str_replace (".act", ($type?".tcx":".gpx"), $file_act_name );
 
 	header('Content-Description: File Transfer');
 	header('Content-Type: application/octet-stream');
@@ -404,3 +382,4 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	</div>
 </body>
 </html>
+

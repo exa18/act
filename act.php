@@ -35,7 +35,12 @@ class act {
 	private $MaxPower;
 	private $Speed;
 	private $AvgSpeed;
+	private $MaxSpeed;
 	private $MaxCadence;
+	private $AUpheight;
+	private $ADownheight;
+	private $MinAlt;
+	private $MaxAlt;
 
 	function __construct ( $act ) {
 		$this->setActivitySport ( $act );
@@ -49,11 +54,16 @@ class act {
 		$this->setMaxHearRate ($act);
 		$this->setAvgCadence ($act);
 		$this->setMaxCadence ($act);
+		$this->setMaxSpeed ($act);
 		$this->setMinTemp ($act);
 		$this->setMaxTemp ($act);
 		$this->setAvgTemp ($act);
 		$this->setAvgPower ($act);
 		$this->setMaxPower ($act);
+		$this->setMinAltitude ($act);
+		$this->setMaxAltitude ($act);
+		$this->setEleUp ($act);
+		$this->setEleDown ($act);
 		$this->setTracks ($act);
 		$this->setTrackPoints ( $act );
 		$this->setDeviceName ( $act );
@@ -219,16 +229,15 @@ class act {
 	function setMaxPower ( $act ) {
 		$this->MaxPower	=  $act->trackmaster->MaxPower;
 	}
-
+	function setMaxSpeed ( $act ) {
+		$this->MaxSpeed	=  str_replace(",", ".",$act->trackmaster->MaxSpeed);
+	}
 	function setTracks ( $act ){
-
 		$this->Tracks = count ($act->TrackPoints );
 	}
 
 	function setTimeTrack ( $value , $track ){
- 
-		$this->TimeTrack[$track] = $value;
-	
+ 		$this->TimeTrack[$track] = $value;
 	}
 
 
@@ -357,69 +366,87 @@ class act {
 		       $this->Speed[$this->track] = $speed;
 
 		}
-		       $this->AvgSpeed = $s/$total;
+		       $this->AvgSpeed = number_format($s/$total, 2, '.', '');
 	}
 
+	function setMinAltitude ( $act ) {
+		$this->MinAlt = $act->trackmaster->MinAltitude;
+	}
+	
+	function setMaxAltitude ( $act ) {
+		$this->MaxAlt = $act->trackmaster->MaxAltitude;
+	}
+	
+	function setEleUp ( $act ) {
+		$this->AUpheight = $act->trackmaster->AUpheight;
+	}
+	
+	function setEleDown ( $act ) {
+		$this->ADownheight = $act->trackmaster->ADownheight;
+	}
+	
+	function getMinAltitude ( ) {
+		return $this->MinAlt;
+	}
+	
+	function getMaxAltitude ( ) {
+		return $this->MaxAlt;
+	}
+	
+	function getEleUp ( ) {
+		return $this->AUpheight;
+	}
+	
+	function getEleDown ( ) {
+		return $this->ADownheight;
+	}
+		
 	function setLatitude( $act, $track , $value) {
-
 		$this->LatitudeDegrees[$track] = $value;
 	}
 	
 	function setLongitude( $act, $track , $value){
-
 		$this->LongitudeDegrees[$track] = $value;
 	}
 
 	function setAltitude($act, $track , $value){
-		
 		$this->AltitudeMeters[$track] = $value;
-	
 	}
 
 	function setHeartRate($act, $track , $value){
-
 		$this->HeartRate[$track] = $value;
 	}
 
-	function setCadenceTrack ($act, $track, $value) {
-		
+	function setCadenceTrack ($track, $value) {
 		$this->CadenceTrack[$track] = $value;
 	}
 
 	function getIntervalTime ( $track ){
-
 		return $this->IntervalTime[$track];
-	
 	}
 
 	function getIntervalTimeDiff ( $track ) {
-
 		return $this->IntervalTimeDiff[$track];
 	}
 
-
 	function getDeviceName ( ) {
-
 		return $this->Device;
 	}
-
 	
 	function getCadenceTrack ($track) {
-
 		return $this->CadenceTrack[$track];
-
 	}
 
-
 	function getHeartRate ($track){
-	
 		return $this->HeartRateBpm[$track];
 	}
 	
 	function getSpeed ($track){
 		return $this->Speed[$track];
 	}
-	
+	function getMaxSpeed (){
+		return $this->MaxSpeed;
+	}	
 	function getPower ($track){
 		return $this->Power[$track];
 	}
@@ -448,99 +475,71 @@ class act {
 	}
 	
 	function getAltitude($track){
-
 		return $this->AltitudeMeters[$track];
 	}
 	
 	function getLongitude($track){
-
 		return $this->LongitudeDegrees[$track];
 	}
 	
 	function getDistance($track){
-
 		return $this->Distance[$track];
 	}
 
 	
 	function getLatitude($track) {
-
 		return $this->LatitudeDegrees[$track];
-			
 	}
 
 	function getTimeTrack ( $track ){
-
 		return $this->TimeTrack[$track];
 	}
 
 	function getTracks () {
-		
 		return $this->Tracks;
-
 	}
 
 	function getAvgCadence () {
-		
 		return $this->Cadence;
-
 	}
 	
 	function getMaxCadence () {
-		
 		return $this->MaxCadence;
-
 	}
 
 	function getMaxHearRate () {
-
 		return $this->MaxHearRate;
-	
 	}
 
 	function getAverageHeartRateBpm ( )  {
-
 		return $this->AvgHeartRate;
 	}
 
 	function getCalories (  ) {
-
 		return $this->Calories;
 	}
 
 	function getDistanceMeters (  ) {
-
 		return $this->Distancemeters;
-	
 	}
 
 	function getTotalTimeSeconds () {
-
 		return $this->ttseconds;
-
 	}
 
-
 	function getStarttime()		{
-
 		return $this->dateTime->format('Y-m-d\TH:i:s\Z');
 	}	
-
-
 	
 	function getId ()		{
-
 		return $this->Id->format('Y-m-d\TH:i:s\Z');
 	}
 
 	function getActivitySport()	{
-
 		return $this->Sport_t;
-	
 	}
 
 	function getUTC () {
-
 		return $this->utc_offset; 
 	}
 
