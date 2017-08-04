@@ -11,6 +11,7 @@ class act {
 	private $ttseconds;
 	private $distancemeters;
 	private $AvgHeartRate;
+	private $MinHeartRate;
 	private $MaxHearRate;
 	private $Cadence;
 	private $Tracks;
@@ -367,6 +368,7 @@ class act {
 
 		}
 		       $this->AvgSpeed = number_format($s/$total, 2, '.', '');
+		       $this->MinHeartRate = min($this->HeartRateBpm);
 	}
 
 	function setMinAltitude ( $act ) {
@@ -439,6 +441,10 @@ class act {
 
 	function getHeartRate ($track){
 		return $this->HeartRateBpm[$track];
+	}
+	
+	function getMinHeartRate (){
+		return $this->MinHeartRate;
 	}
 	
 	function getSpeed ($track){

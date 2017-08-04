@@ -79,7 +79,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 		    <extensions>
 		      <profile>Juliancenkier</profile>
 		      <time>2017-03-24T16:54:24</time>
-		      <length>31031</length>
+		      +<length>31031</length>
 		      <timelength>6031</timelength>
 		      +<avgspeed>5.144444</avgspeed>
 		      +<maxspeed>13.055556</maxspeed>
@@ -99,9 +99,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 		*/
 		
 		/*
-			this section ignored by Strava
+			this section is ignored by Strava
 		*/
 		$extensions = $trk->addChild( 'extensions');
+		$extensions->addChild( 'length', $act->getDistanceMeters () );
 		$extensions->addChild( 'avgspeed', $act->getAvgSpeed() );
 		$extensions->addChild( 'maxspeed', $act->getMaxSpeed() );
 		$extensions->addChild( 'minaltitude', $act->getMinAltitude() );
@@ -109,6 +110,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 		$extensions->addChild( 'totalascent', $act->getEleUp() );
 		$extensions->addChild( 'totaldescent', $act->getEleDown() );
 		$extensions->addChild( 'calories', $act->getCalories() );
+		$extensions->addChild( 'avgcadence', $act->getAvgCadence() );
+		$extensions->addChild( 'maxcadence', $act->getMaxCadence() );
+		$extensions->addChild( 'avgheartrate', $act->getAverageHeartRateBpm() );
+		$extensions->addChild( 'minheartrate', $act->getMinHeartRate() );
+		$extensions->addChild( 'maxheartrate', $act->getMaxHearRate() );
+		$extensions->addChild( 'avgpower', $act->getAvgPower() );
+		$extensions->addChild( 'maxpower', $act->getMaxPower() );
 		
 		$trkseg = $trk->addChild( 'trkseg' );
 		/*
