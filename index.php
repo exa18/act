@@ -33,16 +33,6 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 		}
 		
 	if (max($cad)>0) {
-		$i=0;
-		foreach ($cad as $k=>$v) {
-			$freq[$v]+=1;
-			$cad_avg_bef+=$v;
-			if ($v>$cad_max_bef) { $cad_max_bef=$v; }
-			if ($v>0) $i++;
-		}
-		$cad_avg_bef=round($cad_avg_bef/$i,0);
-		ksort($freq);
-
 		/*
 			findTripple and zero
 			
@@ -230,13 +220,20 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 		
 		$cad_fixed=(count($cor_a)*3)+count($cor_b)+count($cor_c)+count($cor_d)+count($cor_e)+count($cor_f);
 		
-		$XmlAct->setMaxCadenceVal( max($cad) );
-		$cadavg = 0;
-		foreach ($cad as $v) {
-			$cadavg += (int)$v;
-		}
-		$XmlAct->setAvgCadenceVal( number_format($cadavg/$total,0,'','') );
-		
+		/*
+			renew Cadence table and it's avg and max
+		*/
+			$XmlAct->setMaxCadenceVal( max($cad) );
+			$cadavg = 0;
+			$i=1;
+			foreach ($cad as $v) {
+				if ($v) {
+					// all none zero cad counts
+					$cadavg += (int)$v;
+					$i++;
+				}
+			}
+			$XmlAct->setAvgCadenceVal( number_format($cadavg/$i,0,'','') );
 		for ( $i = 0; $i < $total; $i++ ) {
 			$XmlAct->setCadenceTrack($i, $cad[$i]);
 		}
