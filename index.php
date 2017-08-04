@@ -230,6 +230,13 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 		
 		$cad_fixed=(count($cor_a)*3)+count($cor_b)+count($cor_c)+count($cor_d)+count($cor_e)+count($cor_f);
 		
+		$XmlAct->setMaxCadenceVal( max($cad) );
+		$cadavg = 0;
+		foreach ($cad as $v) {
+			$cadavg += (int)$v;
+		}
+		$XmlAct->setAvgCadenceVal( number_format($cadavg/$total,0,'','') );
+		
 		for ( $i = 0; $i < $total; $i++ ) {
 			$XmlAct->setCadenceTrack($i, $cad[$i]);
 		}

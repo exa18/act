@@ -512,7 +512,12 @@ class act {
 	function getMaxCadence () {
 		return $this->MaxCadence;
 	}
-
+	function setMaxCadenceVal ($val) {
+		$this->MaxCadence = $val;
+	}
+	function setAvgCadenceVal ($val) {
+		$this->Cadence = $val;
+	}
 	function getMaxHearRate () {
 		return $this->MaxHearRate;
 	}
