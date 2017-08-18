@@ -380,7 +380,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 			<input class="btn btn-success hidden" type="submit" value="Convert" />
 		</form>
 		<hr />
-		<div id="footer" class="small">powered by <a class="btn btn-default btn-xs" href="http://salsan.github.io/act/">ACT</a> and <a class="btn btn-default btn-xs" href="https://github.com/exa18/act/tree/update-2.0">GitHub update</a></div>
+		<div id="footer" class="small">powered by <a class="btn btn-default btn-xs" href="http://salsan.github.io/act/">ACT</a> and <a class="btn btn-default btn-xs" href="https://github.com/exa18/act/tree/update-2.0">GitHub update 2.x</a></div>
 	</div>
 	</div>
 	</div>

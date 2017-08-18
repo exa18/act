@@ -1,7 +1,8 @@
 <?php
-
-/* Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
- */
+/*
+	Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
+	Copyright (C) 2017 Julian Cenkier <julan.cenkier@wp.eu> 
+*/
 
 class act {
 

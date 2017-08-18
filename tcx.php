@@ -1,6 +1,8 @@
 <?php
-/* Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
- */
+/*
+	Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
+	Copyright (C) 2017 Julian Cenkier <julan.cenkier@wp.eu> 
+*/
 class tcx {
 
 	private $tcx;
@@ -66,11 +68,9 @@ class tcx {
 		$Creator = $Activity->addChild ('Creator');
 		$Creator->addAttribute('xmlns:xsi:type', 'Device_t');
 		$Name = $Creator->addChild ('Name', $act->getDeviceName() . ($baro?' with barometer':'') );
-
 	}
 
 	function GetTcx ( ) {
-
 		return $this->tcx;
 	}
 }
