@@ -9,8 +9,8 @@ class tcx {
 
 	private $tcx;
 
-	function __construct ( $act, $baro=1, $hr=0, $ms=true) {
-		
+	function __construct ( $act, $baro=1) {
+		$ms=true;
 		$ae='http://www.garmin.com/xmlschemas/ActivityExtension/v2';
 		$this->tcx = new SimpleXMLElement("<TrainingCenterDatabase></TrainingCenterDatabase>");
 		$root = $this->tcx;
