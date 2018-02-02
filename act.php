@@ -1,11 +1,12 @@
 <?php
+
 /*
-	Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com> 
-	Copyright (C) 2017 Julian Cenkier <julan.cenkier@wp.eu> 
+	Copyright (C) 2014 Salvatore Santagati <salvatore.santagati@gmail.com>
+	Copyright (C) 2017 Julian Cenkier <julian.cenkier@wp.eu>
 */
 
 class act {
-
+	
 	private $Sport_t;
 	private $Id;
 	private $dateTime;
@@ -43,6 +44,8 @@ class act {
 	private $ADownheight;
 	private $MinAlt;
 	private $MaxAlt;
+	private $NoOfLaps;
+	private $Laps;
 
 	function __construct ( $act ) {
 		$this->setActivitySport ( $act );
@@ -67,12 +70,12 @@ class act {
 		$this->setEleUp ($act);
 		$this->setEleDown ($act);
 		$this->setTracks ($act);
-		$this->setTrackPoints ( $act );
-		$this->setDeviceName ( $act );
+		$this->setTrackPoints ($act);
+		$this->setLaps ($act);
+		$this->setDeviceName ($act);
 	}
 
 	function setDistance ( $lat1, $lon1, $lat2, $lon2, $speed, $interval ) {
-
 		$this->distance = 0;
 
 		if (( $lat1 != $lat2 ) && ( $lon1 != $lon2 ))
@@ -99,14 +102,10 @@ class act {
 			else 	$this->distance = ( ( $DistHaversine + $DistInterval ) / 2 ) * 1000;
 				
 		}
-		
-		
 		return $this->distance;  
-		
 	}
 
 	function hoursToSeconds ($hour) { 
-	
 		$hour_fixed = strtotime(str_replace(".", ":" , $hour ));
 
 		$hours 	= date('H', $hour_fixed);
@@ -117,9 +116,7 @@ class act {
 	}
 
 	function setActivitySport ( $act ) 	{
-
 		switch ($act->trackmaster->Sport1) {
-
 		case	0:
 		case	1:
 		case	2: 
@@ -132,87 +129,67 @@ class act {
 				break;
 		default :
 				$this->Sport_t = "";
-	
 		}
-
 	}
 
 	function setDeviceName ( $act ) {
-		
 		$this->Device = $act->getName();
-
 	}
 
 	function setId ( $act )		{
-
 		$this->current_Id = date("Y-m-d", strtotime ( $act->trackmaster->TrackName ) ) 
 			. "T" . date('H:i:s', strtotime($act->trackmaster->StartTime)) . "Z";
 	
 		$this->Id = new DateTime ($this->current_Id);
 
-		if ( $this->getUTC () < 0 )
+		if ( $this->getUTC() < 0 )
 		{
 			$this->tmpUTC = $this->getUTC() * -1 ;
 			$this->Id->add(new DateInterval('PT' . $this->tmpUTC . 'S'));	
 		}
 		else $this->Id->sub(new DateInterval('PT' . $this->getUTC() . 'S'));
-
 	}
 
 	function setStarttime ( $act )	{
-
 		$this->current_dateTime =  date("Y-m-d", strtotime( $act->trackmaster->TrackName ) ) 
 			. "T" . date('H:i:s', strtotime($act->trackmaster->StartTime)) . "Z";
 
 		$this->dateTime = new DateTime ($this->current_dateTime );
 
-		if ( $this->getUTC () < 0 )
+		if ( $this->getUTC() < 0 )
 		{
 			$this->tmpUTC = $this->getUTC() * -1 ;
 			$this->dateTime->add(new DateInterval('PT' . $this->tmpUTC . 'S'));	
 		}
 		else $this->dateTime->sub(new DateInterval('PT' . $this->getUTC() . 'S'));
-
 	}
-
-
-
-	function setTotalTimeSeconds ( $act ) {
 	
+	function setTotalTimeSeconds ( $act ) {
 		$this->ttseconds =  ( $this->hoursToSeconds ( $act->trackmaster->Duration ) );
-
 	}
 
 	function setDistanceMeters ( $act )	{
-
 		$this->Distancemeters = $act->trackmaster->TotalDist;
-	
 	}
 
 	function setCalories ( $act ) {
-
 		$this->Calories = $act->trackmaster->Calories;
 	}	
 
 
 	function setAverageHeartRateBpm ( $act ) {
-		
 		$this->AvgHeartRate = $act->trackmaster->AvgHeartRate;
 	}
 
 	function setMaxHearRate ($act) {
-
 		$this->MaxHearRate = $act->trackmaster->MaxHearRate;
-	
 	}
 
 	function setAvgCadence ( $act ) {
-
 		$this->Cadence	=  $act->trackmaster->AvgCadence;
 	}
 
 	function setMaxCadence ( $act ) {
-
 		$this->MaxCadence	=  $act->trackmaster->MaxCadence;
 	}
 	
@@ -242,20 +219,15 @@ class act {
  		$this->TimeTrack[$track] = $value;
 	}
 
-
 	function setIntervalTime ( $timediff, $track, $interval ){
-
 		$this->IntervalTime[$track] =  round ( $interval + $timediff );
-	
 	}
 		
 	function setIntervalTimeDiff ( $timediff, $track, $interval ) {
-
 		$this->getIntervalTimeDiff[$track] = $this->getIntervalTime($track) -  $interval + $timediff;
 	}
 
 	function setUTC ( $act ){
-
 		$this->localTime =  date("Y-m-d", strtotime( $act->trackmaster->TrackName ) ) 
 			. "T" . date('H:i:s', strtotime($act->trackmaster->StartTime)) . "Z";
 
@@ -274,11 +246,42 @@ class act {
 		$this->tz = json_decode($this->obj_tz);
 		
 		$this->utc_offset = $this->tz->dstOffset + $this->tz->rawOffset;
-	
 	}
-
+	
+	function setLaps( $act ) {
+		$laps = $act->trackmaster->NoOfLaps;
+		$this->NoOfLaps = $laps;
+		if ($laps>1){
+			$s = 0;
+			for ( $i=0; $i < $laps; $i++ ) {
+				// lap: 1 lap is from 0 to < endIndex[0], and 2 lap is from endIndex[0] to < endIndex
+				$e = $act->trackmaster[$i]->endIndex;
+				$this->Laps[$i]['lap'] = $e;
+				$hr = array();
+				for ($x=$s; $x <= $e; $x++) {
+					$speed = $this->Speed[$x];
+					$speed += (float)$speed;
+					$hr[] = $this->HeartRateBpm[$x];
+				}
+				$this->Laps[$i]['starttime'] = $this->TimeTrack[$s];
+				$this->Laps[$i]['totaltime'] = ( $this->hoursToSeconds ( $act->trackmaster[$i]->TotalTime ) );
+				$this->Laps[$i]['totaldistance'] = $act->trackmaster[$i]->TotalDistance;
+				$this->Laps[$i]['calory'] = $act->trackmaster[$i]->Calory;
+				$this->Laps[$i]['cadavg'] = $act->trackmaster[$i]->LapAvgCad;
+				$this->Laps[$i]['cadmax'] = $act->trackmaster[$i]->LapMaxCad;
+				$this->Laps[$i]['pwravg'] = $act->trackmaster[$i]->LapAvgPwr;
+				$this->Laps[$i]['pwrmax'] = $act->trackmaster[$i]->LapMaxPwr;
+				$this->Laps[$i]['speedmax'] = str_replace (",",".",$act->trackmaster[$i]->LapMaxSpeed);
+				$this->Laps[$i]['speedavg'] = number_format( round($speed/($e-$s-1),2) , 2, '.', '' );
+				$this->Laps[$i]['hrmax'] = $act->trackmaster[$i]->LapMaxHR;
+				$this->Laps[$i]['hravg'] = $act->trackmaster[$i]->LapAvgHR;
+				$this->Laps[$i]['hrmin'] = min($hr);
+				$s = $e+1;
+			}
+		}
+	}
+	
 	function setTrackPoints( $act ){
-
 		$this->CurrentTime = new DateTime ($this->getStarttime()) ;
 
 		$this->Distance[0] = 0;
@@ -292,7 +295,7 @@ class act {
 		       $i=str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
 		       $d=$this->IntervalTimeDiff[$this->track];
 			   $speed=$act->TrackPoints[$this->track]->Speed;
-			   $s=$s+(float)$speed;
+			   $s += (float)$speed;
 			   $speed=str_replace (",",".",$speed);
 		       
 		       $this->IntervalTime[$this->track] =  round ( $d + $i );
@@ -361,6 +364,15 @@ class act {
 					P2 = speed * DF
 					P3 = A * TW
 					P = P1 + P2 + P3
+					
+					
+					// power formula
+					
+					P[W] = F[N] * l[mm] * w[rpm] * 2 * pi / 60
+					P[W] -> power in watts
+					F[N] -> force in newtons
+					l[mm] -> crank length in mm
+					w[rpm] -> cadence in rpm
 			   
 			   */
 			   
@@ -368,6 +380,7 @@ class act {
 		       $this->Speed[$this->track] = $speed;
 
 		}
+				// here set avgspeed and minHR for each lap too
 		       $this->AvgSpeed = number_format($s/$total, 2, '.', '');
 		       $this->MinHeartRate = min($this->HeartRateBpm);
 	}
@@ -388,19 +401,19 @@ class act {
 		$this->ADownheight = $act->trackmaster->ADownheight;
 	}
 	
-	function getMinAltitude ( ) {
+	function getMinAltitude() {
 		return $this->MinAlt;
 	}
 	
-	function getMaxAltitude ( ) {
+	function getMaxAltitude() {
 		return $this->MaxAlt;
 	}
 	
-	function getEleUp ( ) {
+	function getEleUp() {
 		return $this->AUpheight;
 	}
 	
-	function getEleDown ( ) {
+	function getEleDown() {
 		return $this->ADownheight;
 	}
 		
@@ -432,7 +445,7 @@ class act {
 		return $this->IntervalTimeDiff[$track];
 	}
 
-	function getDeviceName ( ) {
+	function getDeviceName() {
 		return $this->Device;
 	}
 	
@@ -444,41 +457,65 @@ class act {
 		return $this->HeartRateBpm[$track];
 	}
 	
-	function getMinHeartRate (){
+	function getMinHeartRate(){
 		return $this->MinHeartRate;
 	}
 	
-	function getSpeed ($track){
-		return $this->Speed[$track];
+	function speedKPHtoMS ($s) {
+		$s = round( $s * 0.277777778 , 3);
+		$s = number_format($s, 3, '.', '');
+		return $s;
 	}
-	function getMaxSpeed (){
-		return $this->MaxSpeed;
-	}	
+	
+	function getSpeed ($track, $ms=false){
+		$s = $this->Speed[$track];
+		if ($ms) {
+			$s = $this->speedKPHtoMS($s);
+		}
+		return $s;
+	}
+	
+	function getMaxSpeed(){
+		$s = $this->MaxSpeed;
+		if ($ms) {
+			$s = $this->speedKPHtoMS($s);
+		}
+		return $s;	
+	}
+	
 	function getPower ($track){
 		return $this->Power[$track];
 	}
-	function getAvgPower (){
+	
+	function getAvgPower(){
 		return $this->AvgPower;
 	}
-	function getMaxPower (){
+	
+	function getMaxPower(){
 		return $this->MaxPower;
 	}
 	function getTemp ($track){
 		return $this->Temperature[$track];
 	}
 	
-	function getMaxTemp () {
+	function getMaxTemp() {
 		return $this->MaxTemp;
 	}
-	function getMinTemp () {
+	
+	function getMinTemp() {
 		return $this->MinTempp;
 	}
-	function getAvgTemp () {
+	
+	function getAvgTemp() {
 		return $this->AvgTemp;
 	}
 	
-	function getAvgSpeed(){
-		return $this->AvgSpeed;
+	function getAvgSpeed($ms=false){
+		$s = $this->AvgSpeed;
+		if ($ms) {
+			$s = $this->speedKPHtoMS($s);
+		}
+		return $s;
 	}
 	
 	function getAltitude($track){
@@ -490,10 +527,14 @@ class act {
 	}
 	
 	function getDistance($track){
-		return $this->Distance[$track];
+		//$precision = 2;     // 1cm
+		//$precision = 1;     // 10cm
+		$precision = 0;     // 100cm
+		$d = round( $this->Distance[$track] , $precision);
+		$d = number_format($d, $precision, '.', '');
+		return $d;
 	}
 
-	
 	function getLatitude($track) {
 		return $this->LatitudeDegrees[$track];
 	}
@@ -502,48 +543,50 @@ class act {
 		return $this->TimeTrack[$track];
 	}
 
-	function getTracks () {
+	function getTracks() {
 		return $this->Tracks;
 	}
 
-	function getAvgCadence () {
+	function getAvgCadence() {
 		return $this->Cadence;
 	}
 	
-	function getMaxCadence () {
+	function getMaxCadence() {
 		return $this->MaxCadence;
 	}
 	function setMaxCadenceVal ($val) {
 		$this->MaxCadence = $val;
 	}
+	
 	function setAvgCadenceVal ($val) {
 		$this->Cadence = $val;
 	}
-	function getMaxHearRate () {
+	
+	function getMaxHearRate() {
 		return $this->MaxHearRate;
 	}
 
-	function getAverageHeartRateBpm ( )  {
+	function getAverageHeartRateBpm()  {
 		return $this->AvgHeartRate;
 	}
 
-	function getCalories (  ) {
+	function getCalories() {
 		return $this->Calories;
 	}
 
-	function getDistanceMeters (  ) {
+	function getDistanceMeters() {
 		return $this->Distancemeters;
 	}
 
-	function getTotalTimeSeconds () {
+	function getTotalTimeSeconds() {
 		return $this->ttseconds;
 	}
 
-	function getStarttime()		{
+	function getStarttime() {
 		return $this->dateTime->format('Y-m-d\TH:i:s\Z');
-	}	
+	}
 	
-	function getId ()		{
+	function getId() {
 		return $this->Id->format('Y-m-d\TH:i:s\Z');
 	}
 
@@ -551,10 +594,21 @@ class act {
 		return $this->Sport_t;
 	}
 
-	function getUTC () {
+	function getUTC() {
 		return $this->utc_offset; 
 	}
 
+	function getNoOfLaps(){
+		return $this->NoOfLaps;
+	}
+	
+	function getLaps(){
+		return $this->Laps;
+	}
+	
+	function setLapsMod($laps){
+		$this->Laps = $laps;
+	}
+	
 }
-
 ?>

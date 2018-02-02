@@ -1,4 +1,9 @@
 <?php
+/*
+	*** UI ***
+	Copyright (C) 2017 Julian Cenkier <julian.cenkier@wp.eu>
+*/
+
 $version = "2.0";
 
 include "act.php";
@@ -13,13 +18,11 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 		$url = $_FILES["user_file"]["tmp_name"]; 
     	$file_act_name = $_FILES["user_file"]["name"];
 	}
-	$baro=0;
-	$fixit=0;
-	$power=0;
+	
 	$type=1;
 	if(isset($_POST['baro'])) $baro=(int)$_POST['baro'];
 	if(isset($_POST['fixit'])) $fixit=(int)$_POST['fixit'];
-	if(isset($_POST['power'])) $power=(int)$_POST['power'];
+	//if(isset($_POST['power'])) $power=(int)$_POST['power'];
 	if(isset($_POST['fileformat'])) $type=(int)$_POST['fileformat'];
 
 	$act=simplexml_load_file($url);
@@ -234,9 +237,31 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 				}
 			}
 			$XmlAct->setAvgCadenceVal( number_format($cadavg/$i,0,'','') );
-		for ( $i = 0; $i < $total; $i++ ) {
-			$XmlAct->setCadenceTrack($i, $cad[$i]);
-		}
+			for ( $i = 0; $i < $total; $i++ ) {
+				$XmlAct->setCadenceTrack($i, $cad[$i]);
+			}
+			
+			$laps = $XmlAct->getNoOfLaps();
+			// are laps?
+			if ($laps>1){
+				$l = $XmlAct->getLaps();
+				$s=0;
+				for ( $i=0; $i < $laps; $i++ ) {
+					$e = $l[$i]['lap'];
+					$y=0;
+					$cadlap = array();
+					for ($x=$s; $x <= $e; $x++) {
+						if ($cad[$x]){
+							$cadlap[] = (int)$cad[$x];
+							$y++;
+						}
+					}
+					$l[$i]['cadavg'] = number_format( round(array_sum($cadlap)/$y) ,0,'','' );
+					$l[$i]['cadmax'] = max($cadlap);
+					$s = $e+1;
+				}
+				$XmlAct->setLapsMod($l);
+			}
 	}
 	}
 	
@@ -249,14 +274,14 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	}
 	
 	$dom = dom_import_simplexml($xml)->ownerDocument;
-	$dom->formatOutput = true;
+	$dom->formatOutput = false;
 	$file_act_name = str_replace (".act", ($type?".tcx":".gpx"), $file_act_name );
 
 	header('Content-Description: File Transfer');
 	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename='.$file_act_name );
 	echo $dom->saveXML();
-	
+		
 	exit();
 }
 ?>
@@ -322,7 +347,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	<div class="container">
 	<div class="row">
 	<div class="col-xs-12">
-	<h3>ACT to TCX/GPX</h3>
+	<h3>ACT to TCX/GPX <span class="badge"><?=$version?></span></h3>
 	<p class="small">ACT <span class="label label-default">GlobalSite</span> convert to TCX/GPX <span class="label label-default">Garmin</span></p>
 	<hr />
 		<form id="form" method="post" action="index.php" enctype="multipart/form-data">
@@ -369,7 +394,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 				<input type="radio" name="fixit" value="1"  checked="checked" />ON</label>
             </div>
             </div>
-            
+     
             </div>
 			<input id="file-1" class="inputfile inputfile-1" type="file" name="user_file" />
 				<label for="file-1" class="btn btn-default"><svg xmlns="#" width="20" height="17" viewBox="0 0 20 17">
@@ -380,7 +405,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 			<input class="btn btn-success hidden" type="submit" value="Convert" />
 		</form>
 		<hr />
-		<div id="footer" class="small">powered by <a class="btn btn-default btn-xs" href="http://salsan.github.io/act/">ACT</a> and <a class="btn btn-default btn-xs" href="https://github.com/exa18/act/tree/update-2.0">GitHub update 2.x</a></div>
+		<div id="footer" class="small">powered by <a class="btn btn-default btn-xs" href="http://salsan.github.io/act/">ACT</a> and <a class="btn btn-default btn-xs" href="https://github.com/exa18/act/tree/update-2.0">GitHub update</a></div>
 	</div>
 	</div>
 	</div>
