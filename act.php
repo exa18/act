@@ -528,8 +528,8 @@ class act {
 	
 	function getDistance($track){
 		//$precision = 2;     // 1cm
-		//$precision = 1;     // 10cm
-		$precision = 0;     // 100cm
+		$precision = 1;     // 10cm
+		//$precision = 0;     // 100cm
 		$d = round( $this->Distance[$track] , $precision);
 		$d = number_format($d, $precision, '.', '');
 		return $d;
