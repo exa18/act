@@ -292,13 +292,13 @@ class act {
 			
 			/* TIME */
 		       $this->TimeTrack[$this->track] = $this->CurrentTime->format('Y-m-d\TH:i:s\Z');
-		       $i=str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
-		       $d=$this->IntervalTimeDiff[$this->track];
-			   $speed=$act->TrackPoints[$this->track]->Speed;
+		       $i = str_replace (",","." , $act->TrackPoints[$this->track]->IntervalTime);
+		       $d = $this->IntervalTimeDiff[$this->track];
+			   $speed = $act->TrackPoints[$this->track]->Speed;
 			   $s += (float)$speed;
-			   $speed=str_replace (",",".",$speed);
-		       
-		       $this->IntervalTime[$this->track] =  round ( $d + $i );
+			   $speed = str_replace (",",".",$speed);
+		       $t = round ( $d + $i );
+		       $this->IntervalTime[$this->track] = $t;
 		       /*
 		       $this->setIntervalTime( 
 				$d,
@@ -308,7 +308,7 @@ class act {
 			);
 			*/
 			
-				//$this->IntervalTimeDiff[$this->track] = $this->IntervalTime[$this->track] -  $d + $i;
+				$this->IntervalTimeDiff[$this->track] = $t -  $d + $i;
 				/*
 		       $this->setIntervalTimeDiff( 
 			       	$d,
@@ -318,7 +318,7 @@ class act {
 			);
 			*/
 		       //$this->CurrentTime->add(new DateInterval('PT' . $this->getIntervalTime($this->track) . 'S'));
-		       $this->CurrentTime->add(new DateInterval('PT' . $this->IntervalTime[$this->track] . 'S'));
+		       $this->CurrentTime->add(new DateInterval('PT' . $t . 'S'));
 
 		       /* Latitude */
 		       $this->LatitudeDegrees[$this->track] = ( str_replace(",", "." , $act->TrackPoints[$this->track]->Latitude ) );
@@ -526,11 +526,23 @@ class act {
 		return $this->LongitudeDegrees[$track];
 	}
 	
-	function getDistance($track){
+	function getDistance($track, $strava=0, $indoor=0){
 		//$precision = 2;     // 1cm
 		$precision = 1;     // 10cm
+		if ($strava) {
+			$strava = 1.02;
+			if ($indoor) {
+				$strava = 2 - $strava;
+			}
+		}else{
+			$strava = 1;
+		}
 		//$precision = 0;     // 100cm
-		$d = round( $this->Distance[$track] , $precision);
+		if ($indoor) {
+			$d = round( $this->speedKPHtoMS($this->Speed[$track])*$strava , $precision, PHP_ROUND_HALF_DOWN);
+		}else{
+			$d = round( $this->Distance[$track]*$strava , $precision);
+		}
 		$d = number_format($d, $precision, '.', '');
 		return $d;
 	}

@@ -22,6 +22,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	$type=1;
 	if(isset($_POST['baro'])) $baro=(int)$_POST['baro'];
 	if(isset($_POST['fixit'])) $fixit=(int)$_POST['fixit'];
+	if(isset($_POST['indoor'])) $indoor=(int)$_POST['indoor'];
 	//if(isset($_POST['power'])) $power=(int)$_POST['power'];
 	if(isset($_POST['fileformat'])) $type=(int)$_POST['fileformat'];
 
@@ -266,7 +267,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	}
 	
 	if ($type) {
-		$XmlTcx = new tcx ( $XmlAct, $baro );
+		$XmlTcx = new tcx ( $XmlAct, $baro, $indoor );
 		$xml = $XmlTcx->GetTcx();
 	}else{
 		$XmlGpx = new gpx ( $XmlAct, $baro );
@@ -374,7 +375,16 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
             </div>
             </div>
  -->			
-		
+			<div class="form-group btn-switch">
+			<div class="btn-group" data-toggle="buttons">
+				<label class="txt-normal">&nbsp;indoor traning</label>
+				<label class="btn btn-default btn-off btn-xs active">
+				<input type="radio" name="indoor" value="0"  checked="checked" />NO</label>
+				<label class="btn btn-default btn-on btn-xs ">
+				<input type="radio" name="indoor" value="1" />YES</label>
+            </div>
+            </div>
+            		
 			<div class="form-group btn-switch">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;with baromater</label>

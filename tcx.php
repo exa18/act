@@ -9,8 +9,9 @@ class tcx {
 
 	private $tcx;
 
-	function __construct ( $act, $baro=1) {
+	function __construct ( $act, $baro=1, $indoor=0) {
 		$ms=true;
+		$strava=true;
 		$ae='http://www.garmin.com/xmlschemas/ActivityExtension/v2';
 		$this->tcx = new SimpleXMLElement("<TrainingCenterDatabase></TrainingCenterDatabase>");
 		$root = $this->tcx;
@@ -51,7 +52,7 @@ class tcx {
 					$MaximumHeartRateBpm->addChild ( 'Value', $li['hrmax'] );
 					$Cadence = $Lap->addChild ('Cadence', $li['cadavg'] );
 					$Track = $Lap->addChild ('Track');					
-					
+					$yd = 0;
 					for ($x=$s; $x <= $e; $x++) {
 						$Trackpoint = $Track->addChild('Trackpoint');
 						$Trackpoint->addChild('Time', $act->getTimeTrack( $x ) );
@@ -59,7 +60,12 @@ class tcx {
 						$Position->addChild('LatitudeDegrees', $act->getLatitude($x) );
 						$Position->addChild('LongitudeDegrees', $act->getLongitude($x) );
 						$Trackpoint->addChild('AltitudeMeters', $act->getAltitude($x) );
-						$Trackpoint->addchild('DistanceMeters', $act->getDistance($x) );
+							$xd = $act->getDistance($x,$strava, $indoor);
+							if ($indoor) {
+								$yd += $xd;
+								$xd = $yd;
+							}
+						$Trackpoint->addchild('DistanceMeters', $xd );
 						$HeartRateBpm = $Trackpoint->addChild('HeartRateBpm');
 						$HeartRateBpm->addAttribute('xmlns:xsi:type','HeartRateInBeatsPerMinute_t');
 						$HeartRateBpm->addChild('Value', $act->getHeartRate($x) );
@@ -91,7 +97,7 @@ class tcx {
 			$MaximumHeartRateBpm->addChild ( 'Value', $act->getMaxHearRate() );
 			$Cadence = $Lap->addChild ('Cadence', $act->getAvgCadence() );
 			$Track = $Lap->addChild ('Track');
-	
+			$yd = 0;
 			for ( $i = 0; $i < $total; $i++ ) {
 				$Trackpoint = $Track->addChild('Trackpoint');
 				$Trackpoint->addChild('Time', $act->getTimeTrack( $i ) );
@@ -99,7 +105,12 @@ class tcx {
 				$Position->addChild('LatitudeDegrees', $act->getLatitude($i) );
 				$Position->addChild('LongitudeDegrees', $act->getLongitude($i) );
 				$Trackpoint->addChild('AltitudeMeters', $act->getAltitude($i) );
-				$Trackpoint->addchild('DistanceMeters', $act->getDistance($i) );
+					$xd = $act->getDistance($i,$strava, $indoor);
+					if ($indoor) {
+						$yd += $xd;
+						$xd = $yd;
+					}
+				$Trackpoint->addchild('DistanceMeters', $xd );
 				$HeartRateBpm = $Trackpoint->addChild('HeartRateBpm');
 				$HeartRateBpm->addAttribute('xmlns:xsi:type','HeartRateInBeatsPerMinute_t');
 				$HeartRateBpm->addChild('Value', $act->getHeartRate($i) );
