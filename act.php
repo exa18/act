@@ -529,15 +529,17 @@ class act {
 	function getDistance($track, $strava=0, $indoor=0){
 		//$precision = 2;     // 1cm
 		$precision = 1;     // 10cm
+		//$precision = 0;     // 100cm
 		if ($strava) {
-			$strava = 1.02;
+			//$strava = 1.0295;
+			$strava = 1.03456;
+			//$strava = 1.04567;
 			if ($indoor) {
 				$strava = 2 - $strava;
 			}
 		}else{
 			$strava = 1;
 		}
-		//$precision = 0;     // 100cm
 		if ($indoor) {
 			$d = round( $this->speedKPHtoMS($this->Speed[$track])*$strava , $precision, PHP_ROUND_HALF_DOWN);
 		}else{

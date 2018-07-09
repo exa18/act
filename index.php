@@ -25,6 +25,8 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	if(isset($_POST['indoor'])) $indoor=(int)$_POST['indoor'];
 	//if(isset($_POST['power'])) $power=(int)$_POST['power'];
 	if(isset($_POST['fileformat'])) $type=(int)$_POST['fileformat'];
+	if(isset($_POST['inlaps'])) $inlaps=(int)$_POST['inlaps'];
+	if(isset($_POST['strava'])) $strava=(int)$_POST['strava'];
 
 	$act=simplexml_load_file($url);
 	$XmlAct = new act ( $act );
@@ -267,7 +269,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	}
 	
 	if ($type) {
-		$XmlTcx = new tcx ( $XmlAct, $baro, $indoor );
+		$XmlTcx = new tcx ( $XmlAct, $baro, $indoor, $inlaps, $strava );
 		$xml = $XmlTcx->GetTcx();
 	}else{
 		$XmlGpx = new gpx ( $XmlAct, $baro );
@@ -308,11 +310,14 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 	.txt-normal{font-weight:normal}
 	.btn-default.btn-on.active, .btn-default.btn-off.active{background-color: #3cd;color: white}	
 	.btn-switch .btn-default.btn-off.active{background-color: #777}
+	.btn-switch.small label:not([class*="btn"]) {font-size:0.85em}
+	.btn-switch.small label[class*="btn"] {font-size:0.7em}
 	#footer{margin:auto}
 	.txt-normal{font-weight:normal}
 	.btn-default.btn-on.active, .btn-default.btn-off.active{background-color: #3cd;color: white}	
 	.btn-switch .btn-default.btn-off.active{background-color: #777}
 	.btn-switch-grp .btn-switch{margin-bottom:10px}
+	.btn-switch.small{margin-bottom:5px}
 	.btn-switch-grp{margin:20px 0 15px 0}
 	</style>
 	<script type="text/javascript">
@@ -377,31 +382,51 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
  -->			
 			<div class="form-group btn-switch">
 			<div class="btn-group" data-toggle="buttons">
-				<label class="txt-normal">&nbsp;indoor traning</label>
+				<label class="txt-normal">&nbsp;indoor workout</label>
 				<label class="btn btn-default btn-off btn-xs active">
 				<input type="radio" name="indoor" value="0"  checked="checked" />NO</label>
 				<label class="btn btn-default btn-on btn-xs ">
 				<input type="radio" name="indoor" value="1" />YES</label>
             </div>
             </div>
+            
+            <div class="form-group btn-switch">
+			<div class="btn-group" data-toggle="buttons">
+				<label class="txt-normal">&nbsp;include laps</label>
+				<label class="btn btn-default btn-off btn-xs ">
+				<input type="radio" name="inlaps" value="0" />NO</label>
+				<label class="btn btn-default btn-on btn-xs active">
+				<input type="radio" name="inlaps" value="1" checked="checked" />YES</label>
+            </div>
+            </div>
             		
-			<div class="form-group btn-switch">
+			<div class="form-group btn-switch small">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;with baromater</label>
 				<label class="btn btn-default btn-off btn-xs ">
-				<input type="radio" name="baro" value="0" />OFF</label>
+				<input type="radio" name="baro" value="0" />NO</label>
 				<label class="btn btn-default btn-on btn-xs active">
-				<input type="radio" name="baro" value="1" checked="checked" />ON</label>
+				<input type="radio" name="baro" value="1" checked="checked" />YES</label>
             </div>
             </div>
 
-			<div class="form-group btn-switch">
+			<div class="form-group btn-switch small">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;fix cadence</label>
 				<label class="btn btn-default btn-off btn-xs ">
-				<input type="radio" name="fixit" value="0" />OFF</label>
+				<input type="radio" name="fixit" value="0" />NO</label>
 				<label class="btn btn-default btn-on btn-xs active">
-				<input type="radio" name="fixit" value="1"  checked="checked" />ON</label>
+				<input type="radio" name="fixit" value="1"  checked="checked" />YES</label>
+            </div>
+            </div>
+            
+            <div class="form-group btn-switch small">
+			<div class="btn-group" data-toggle="buttons">
+				<label class="txt-normal">&nbsp;fix strava distance</label>
+				<label class="btn btn-default btn-off btn-xs ">
+				<input type="radio" name="strava" value="0" />NO</label>
+				<label class="btn btn-default btn-on btn-xs active">
+				<input type="radio" name="strava" value="1"  checked="checked" />YES</label>
             </div>
             </div>
      

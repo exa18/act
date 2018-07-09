@@ -9,9 +9,8 @@ class tcx {
 
 	private $tcx;
 
-	function __construct ( $act, $baro=1, $indoor=0) {
+	function __construct ( $act, $baro=1, $indoor=0, $inlaps=1, $strava=true) {
 		$ms=true;
-		$strava=true;
 		$ae='http://www.garmin.com/xmlschemas/ActivityExtension/v2';
 		$this->tcx = new SimpleXMLElement("<TrainingCenterDatabase></TrainingCenterDatabase>");
 		$root = $this->tcx;
@@ -29,7 +28,7 @@ class tcx {
 		$laps = $act->getNoOfLaps();
 		$total=$act->getTracks();
 		
-		if ($laps>1){
+		if ($laps>1 && $inlaps){
 		/*
 			Laps
 		*/
