@@ -35,7 +35,7 @@ License
 ===
 
 * Copyright 2014 Salvatore Santagati <salvatore.santagati@gmail.com>
-* Copyright 2017 Julian Cenkier <julian.cenkier@wp.eu>
+* Copyright 2017-18 Julian Cenkier <julian.cenkier@wp.eu>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
