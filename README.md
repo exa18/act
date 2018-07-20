@@ -22,7 +22,7 @@ Tested
   Software
 
   - GS-Sport Training Gym Pro version 1.6.10.0 ( SportXtreme version )
-  - GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com/Page/9/GB-580-Support) update )
+  - GS-Sport Training Gym Pro version 1.9.4 ( [usGlobalSat](http://usglobalsat.com/Page/9/GB-580-Support), [update](https://www.globalsat.com.tw/style/frame/m5/features.asp?content_set=color_2&lang=2&customer_id=909&name_id=10580) )
 
 
 Help
