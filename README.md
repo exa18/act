@@ -28,7 +28,7 @@ Tested
   
   Firmware
   
-  You must update your device to latest firmware
+  - Update your device to latest firmware
   [F-GGB-2O-1503311.GHX](https://www.globalsat.com.tw/style/frame/m5/features.asp?content_set=color_2&lang=2&customer_id=909&name_id=10580) 
 
 
