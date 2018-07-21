@@ -10,7 +10,7 @@ class gpx {
 
 	private $gpx;
 
-	function __construct ( $act, $baro=0) {
+	function __construct ( $act, $baro=0 ) {
 
 		$this->gpx = new SimpleXMLElement("<gpx></gpx>");
 		$root=$this->gpx;

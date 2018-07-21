@@ -345,6 +345,9 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
 				$('input[type="reset"]').addClass('hidden');
 				ff.labelchange(ff.labelval);
 			});
+			$('.form-group input[name="fileformat"]').on('change', function() {
+				$('#form .form-group.btn-nogpx').toggle();
+			});
 		});
 	</script>
 	<title>ACT : Convert ACT ( GlobalSite ) to TCX/GPX ( Garmin)</title>
@@ -380,7 +383,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
             </div>
             </div>
  -->			
-			<div class="form-group btn-switch">
+			<div class="form-group btn-switch btn-nogpx">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;indoor workout</label>
 				<label class="btn btn-default btn-off btn-xs active">
@@ -390,7 +393,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
             </div>
             </div>
             
-            <div class="form-group btn-switch">
+            <div class="form-group btn-switch btn-nogpx">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;include laps</label>
 				<label class="btn btn-default btn-off btn-xs ">
@@ -420,7 +423,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'upload')
             </div>
             </div>
             
-            <div class="form-group btn-switch small">
+            <div class="form-group btn-switch small btn-nogpx">
 			<div class="btn-group" data-toggle="buttons">
 				<label class="txt-normal">&nbsp;fix strava distance</label>
 				<label class="btn btn-default btn-off btn-xs ">
