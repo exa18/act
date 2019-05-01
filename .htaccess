@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteRule .* - [E=noabort:1]
+RewriteRule .* - [E=noconntimeout:1]
+
+
+#php_value upload_max_filesize 2M
+#php_value post_max_size 20M
+#php_value max_execution_time 65500
